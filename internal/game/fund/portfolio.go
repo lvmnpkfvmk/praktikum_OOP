@@ -69,7 +69,6 @@ func (p *Portfolio) BuyInvestment(investment in.Investment, quantity int) {
     case *in.Stock:
         p.buyInvestment(&p.Stocks, inv, quantity)
     }
-    fmt.Println(p.Deposits)
     investment.Buy(quantity)
 }
 
