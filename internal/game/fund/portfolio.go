@@ -77,13 +77,13 @@ func (p *Portfolio) BuyInvestment(investment in.Investment, quantity int) {
 func (p *Portfolio) SellInvestment(investment in.Investment, quantity int) {
     switch inv := investment.(type) {
     case *in.Deposit:
-        p.sellInvestment(p.Deposits, inv, quantity)
+        p.sellInvestment(&p.Deposits, inv, quantity)
     case *in.Metal:
-        p.sellInvestment(p.Metals, inv, quantity)
+        p.sellInvestment(&p.Metals, inv, quantity)
     case *in.Bond:
-        p.sellInvestment(p.Bonds, inv, quantity)
+        p.sellInvestment(&p.Bonds, inv, quantity)
     case *in.Stock:
-        p.sellInvestment(p.Stocks, inv, quantity)
+        p.sellInvestment(&p.Stocks, inv, quantity)
     }
     investment.Sell(quantity)
 }
@@ -99,12 +99,12 @@ func (p *Portfolio) buyInvestment(investments *[]Pair, investment in.Investment,
     *investments = append(*investments, Pair{investment, quantity})
 }
 
-func (p *Portfolio) sellInvestment(investments []Pair, investment in.Investment, quantity int) {
-    for i, tuple := range investments {
+func (p *Portfolio) sellInvestment(investments *[]Pair, investment in.Investment, quantity int) {
+    for i, tuple := range *investments {
         if tuple.I.Name() == investment.Name() {
-            investments[i].Q -= quantity
-            if investments[i].Q <= 0 {
-                investments = append(investments[:i], investments[i+1:]...)
+            (*investments)[i].Q -= quantity
+            if (*investments)[i].Q <= 0 {
+                *investments = append((*investments)[:i], (*investments)[i+1:]...)
             }
             return
         }
